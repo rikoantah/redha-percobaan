@@ -20,6 +20,13 @@ body{margin:0;background:#f4f6fb;padding:12px}
 .top a:nth-child(2){background:#43e97b;}
 .top a:nth-child(3){background:#f093fb;}
 
+/* REKAP */
+.btn-rekap{
+  width:100%;padding:12px;border:none;border-radius:10px;
+  background:#222;color:#fff;margin-bottom:10px;
+  cursor:pointer;font-weight:600;
+}
+
 /* CARD */
 .card{
   background:#fff;border-radius:14px;padding:16px;
@@ -52,14 +59,11 @@ body{margin:0;background:#f4f6fb;padding:12px}
 }
 .today{background:#b388ff !important}
 
-/* NAV */
-.nav{
-  display:flex;gap:10px;margin-top:12px;
-}
-.nav button{
-  flex:1;padding:10px;border:none;border-radius:10px;
-  background:#222;color:#fff;font-weight:600;
-}
+/* TABLE */
+table{width:100%;font-size:14px}
+td,th{padding:8px;border-bottom:1px solid #eee}
+.row-today{background:#ede7f6}
+
 </style>
 </head>
 
@@ -68,26 +72,35 @@ body{margin:0;background:#f4f6fb;padding:12px}
 <div class="container">
 
 <div class="top">
-  <a href="#">INPUT</a>
-  <a href="#">JADWAL</a>
-  <a href="#">SUKET</a>
+  <a href="https://aktivitas.kalbarprov.go.id//engine/feature26/data-kinerja/add#TakeOff" target="_blank">INPUT</a>
+  <a href="https://epresensi.kalbarprov.go.id/login-general" target="_blank">JADWAL</a>
+  <a href="https://script.google.com/macros/s/AKfycbwl9sC1tabi_-BC6vU2KFH1drCGPHwgmgIqNFks_ipCSxFCjH1NyxITPodOC4CWJwjJYQ/exec" target="_blank">SUKET</a>
 </div>
 
+<button class="btn-rekap" onclick="toggleRekap()">📊 REKAP</button>
+
+<div id="rekapBox" style="display:none"></div>
 <div id="app"></div>
 
 </div>
 
 <script>
 
+/* ======================
+   DATA (DECOY)
+====================== */
 let data = [
-  {nama:"Riko Saputra", nip:"19800101", password:"123456"},
-  {nama:"Andi Wijaya", nip:"19800202", password:"abcdef"},
-  {nama:"Siti Rahma", nip:"19800303", password:"qwerty"}
+  {no:1, nama:"Riko Saputra", nip:"19800101", password:"123456"},
+  {no:2, nama:"Andi Wijaya", nip:"19800202", password:"abcdef"},
+  {no:3, nama:"Siti Rahma", nip:"19800303", password:"qwerty"}
 ];
 
 let index = 0;
 let showName = false;
 
+/* ======================
+   UTIL
+====================== */
 function todayOnly(){
   return new Date().toISOString().split("T")[0];
 }
@@ -100,6 +113,9 @@ function initials(name){
   return name.split(" ").map(x=>x[0]).join("").toUpperCase();
 }
 
+/* ======================
+   LOCAL STORAGE
+====================== */
 function getLast(nip){
   return localStorage.getItem("last_"+nip);
 }
@@ -109,6 +125,9 @@ function setLast(nip){
   localStorage.setItem("last_"+nip, t);
 }
 
+/* ======================
+   COPY
+====================== */
 function copyRow(text, el){
   navigator.clipboard.writeText(text);
   let old = el.innerText;
@@ -116,11 +135,52 @@ function copyRow(text, el){
   setTimeout(()=>el.innerText = old,1000);
 }
 
+/* ======================
+   STATUS
+====================== */
 function toggleDone(nip){
   setLast(nip);
   render();
 }
 
+/* ======================
+   REKAP + NAVIGASI
+====================== */
+function toggleRekap(){
+  let box = document.getElementById("rekapBox");
+  box.style.display = box.style.display==="block"?"none":"block";
+  renderRekap();
+}
+
+function renderRekap(){
+  document.getElementById("rekapBox").innerHTML = `
+  <div class="card">
+  <table>
+  <tr><th>No</th><th>Nama</th><th>Status</th></tr>
+  ${data.map(d=>{
+    let t = getLast(d.nip);
+    let isToday = t && t.startsWith(todayOnly());
+
+    return `
+    <tr onclick="goTo('${d.nama}')" class="${isToday?'row-today':''}">
+      <td>${d.no}</td>
+      <td>${d.nama}</td>
+      <td>${format(t)}</td>
+    </tr>`;
+  }).join("")}
+  </table>
+  </div>`;
+}
+
+function goTo(nama){
+  index = data.findIndex(d=>d.nama===nama);
+  document.getElementById("rekapBox").style.display="none";
+  render();
+}
+
+/* ======================
+   RENDER
+====================== */
 function render(){
   let d = data[index];
   let t = getLast(d.nip);
@@ -145,24 +205,10 @@ function render(){
       ${t ? "Terakhir Input<br>"+format(t) : "Klik untuk input hari ini"}
     </div>
 
-    <div class="nav">
-      <button onclick="prev()">⬅️</button>
-      <button onclick="next()">➡️</button>
-    </div>
-
   </div>`;
 }
 
-function next(){
-  index = (index + 1) % data.length;
-  render();
-}
-
-function prev(){
-  index = (index - 1 + data.length) % data.length;
-  render();
-}
-
+/* INIT */
 render();
 
 </script>
