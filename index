@@ -59,7 +59,6 @@ body{margin:0;background:#f4f6fb;padding:12px}
 .nav button{
   flex:1;padding:10px;border:none;border-radius:10px;
   background:#222;color:#fff;font-weight:600;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -68,33 +67,27 @@ body{margin:0;background:#f4f6fb;padding:12px}
 
 <div class="container">
 
-  <div class="top">
-    <a href="#">INPUT</a>
-    <a href="#">JADWAL</a>
-    <a href="#">SUKET</a>
-  </div>
+<div class="top">
+  <a href="#">INPUT</a>
+  <a href="#">JADWAL</a>
+  <a href="#">SUKET</a>
+</div>
 
-  <div id="app"></div>
+<div id="app"></div>
 
 </div>
 
 <script>
 
-/* ======================
-   DATA (DECOY)
-====================== */
 let data = [
-  {no:1, nama:"Budi Santoso", nip:"19800101", password:"123456"},
-  {no:2, nama:"Andi Wijaya", nip:"19800202", password:"abcdef"},
-  {no:3, nama:"Siti Rahma", nip:"19800303", password:"qwerty"}
+  {nama:"Riko Saputra", nip:"19800101", password:"123456"},
+  {nama:"Andi Wijaya", nip:"19800202", password:"abcdef"},
+  {nama:"Siti Rahma", nip:"19800303", password:"qwerty"}
 ];
 
 let index = 0;
 let showName = false;
 
-/* ======================
-   UTIL
-====================== */
 function todayOnly(){
   return new Date().toISOString().split("T")[0];
 }
@@ -107,9 +100,6 @@ function initials(name){
   return name.split(" ").map(x=>x[0]).join("").toUpperCase();
 }
 
-/* ======================
-   LOCAL STORAGE
-====================== */
 function getLast(nip){
   return localStorage.getItem("last_"+nip);
 }
@@ -117,12 +107,8 @@ function getLast(nip){
 function setLast(nip){
   let t = new Date().toISOString();
   localStorage.setItem("last_"+nip, t);
-  return t;
 }
 
-/* ======================
-   COPY
-====================== */
 function copyRow(text, el){
   navigator.clipboard.writeText(text);
   let old = el.innerText;
@@ -130,17 +116,11 @@ function copyRow(text, el){
   setTimeout(()=>el.innerText = old,1000);
 }
 
-/* ======================
-   TOGGLE STATUS
-====================== */
 function toggleDone(nip){
   setLast(nip);
   render();
 }
 
-/* ======================
-   RENDER
-====================== */
 function render(){
   let d = data[index];
   let t = getLast(d.nip);
@@ -166,16 +146,13 @@ function render(){
     </div>
 
     <div class="nav">
-      <button onclick="prev()">⬅️ Sebelumnya</button>
-      <button onclick="next()">Selanjutnya ➡️</button>
+      <button onclick="prev()">⬅️</button>
+      <button onclick="next()">➡️</button>
     </div>
 
   </div>`;
 }
 
-/* ======================
-   NAV
-====================== */
 function next(){
   index = (index + 1) % data.length;
   render();
@@ -186,9 +163,6 @@ function prev(){
   render();
 }
 
-/* ======================
-   INIT
-====================== */
 render();
 
 </script>
