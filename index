@@ -1,0 +1,109 @@
+<script>
+
+/* ======================
+   DATA LANGSUNG (HARDCODE)
+====================== */
+let data = [
+  {no:1, nama:"Budi Santoso", nip:"19800101", password:"123"},
+  {no:2, nama:"Andi Wijaya", nip:"19800202", password:"456"},
+  {no:3, nama:"Siti Rahma", nip:"19800303", password:"789"}
+];
+
+let index = 0;
+let showName = false;
+
+/* ======================
+   UTIL
+====================== */
+function todayOnly(){
+  return new Date().toISOString().split("T")[0];
+}
+
+function format(t){
+  return t ? new Date(t).toLocaleString("id-ID") : "-";
+}
+
+function initials(name){
+  return name.split(" ").map(x=>x[0]).join("").toUpperCase();
+}
+
+/* ======================
+   LOCAL STORAGE
+====================== */
+function getLast(nip){
+  return localStorage.getItem("last_"+nip);
+}
+
+function setLast(nip){
+  let t = new Date().toISOString();
+  localStorage.setItem("last_"+nip, t);
+  return t;
+}
+
+/* ======================
+   COPY
+====================== */
+function copyRow(text, el){
+  navigator.clipboard.writeText(text);
+  let old = el.innerText;
+  el.innerText = "✔";
+  setTimeout(()=>el.innerText = old,1000);
+}
+
+/* ======================
+   TOGGLE STATUS
+====================== */
+function toggleDone(nip){
+  let t = setLast(nip);
+  render();
+}
+
+/* ======================
+   RENDER
+====================== */
+function render(){
+  let d = data[index];
+  let t = getLast(d.nip);
+  let isToday = t && t.startsWith(todayOnly());
+
+  document.getElementById("app").innerHTML = `
+  <div class="card">
+
+    <div class="name" onclick="showName=!showName;render()">
+      ${showName ? d.nama : initials(d.nama)}
+    </div>
+
+    <div class="row" onclick="copyRow('${d.nip}',this)">
+      NIP ***
+    </div>
+
+    <div class="row" onclick="copyRow('${d.password}',this)">
+      PASSWORD ***
+    </div>
+
+    <div class="status ${isToday?'today':''}" onclick="toggleDone('${d.nip}')">
+      ${t ? "Terakhir Input<br>"+format(t) : "Klik untuk input hari ini"}
+    </div>
+
+  </div>`;
+}
+
+/* ======================
+   NAV
+====================== */
+function next(){
+  index = (index + 1) % data.length;
+  render();
+}
+
+function prev(){
+  index = (index - 1 + data.length) % data.length;
+  render();
+}
+
+/* ======================
+   INIT
+====================== */
+render();
+
+</script>
