@@ -1,12 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#f4f6fb;padding:12px}
+
+.container{max-width:900px;margin:auto}
+
+/* TOP */
+.top{display:flex;gap:8px;margin-bottom:12px}
+.top a{
+  flex:1;text-align:center;padding:12px;border-radius:10px;
+  color:#fff;text-decoration:none;font-weight:600;
+}
+.top a:nth-child(1){background:#4facfe;}
+.top a:nth-child(2){background:#43e97b;}
+.top a:nth-child(3){background:#f093fb;}
+
+/* CARD */
+.card{
+  background:#fff;border-radius:14px;padding:16px;
+  box-shadow:0 6px 15px rgba(0,0,0,.06);
+}
+
+/* NAME */
+.name{
+  text-align:center;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* ROW */
+.row{
+  padding:12px;border-radius:8px;
+  background:#f1f3f8;
+  margin-top:10px;
+  cursor:pointer;
+  text-align:center;
+  font-weight:600;
+}
+
+/* STATUS */
+.status{
+  margin-top:14px;padding:12px;border-radius:10px;
+  text-align:center;font-weight:600;cursor:pointer;
+  background:#43e97b;color:#fff;
+}
+.today{background:#b388ff !important}
+
+/* NAV */
+.nav{
+  display:flex;gap:10px;margin-top:12px;
+}
+.nav button{
+  flex:1;padding:10px;border:none;border-radius:10px;
+  background:#222;color:#fff;font-weight:600;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="top">
+    <a href="#">INPUT</a>
+    <a href="#">JADWAL</a>
+    <a href="#">SUKET</a>
+  </div>
+
+  <div id="app"></div>
+
+</div>
+
 <script>
 
 /* ======================
-   DATA LANGSUNG (HARDCODE)
+   DATA (DECOY)
 ====================== */
 let data = [
-  {no:1, nama:"Budi Santoso", nip:"19800101", password:"123"},
-  {no:2, nama:"Andi Wijaya", nip:"19800202", password:"456"},
-  {no:3, nama:"Siti Rahma", nip:"19800303", password:"789"}
+  {no:1, nama:"Budi Santoso", nip:"19800101", password:"123456"},
+  {no:2, nama:"Andi Wijaya", nip:"19800202", password:"abcdef"},
+  {no:3, nama:"Siti Rahma", nip:"19800303", password:"qwerty"}
 ];
 
 let index = 0;
@@ -54,7 +134,7 @@ function copyRow(text, el){
    TOGGLE STATUS
 ====================== */
 function toggleDone(nip){
-  let t = setLast(nip);
+  setLast(nip);
   render();
 }
 
@@ -85,6 +165,11 @@ function render(){
       ${t ? "Terakhir Input<br>"+format(t) : "Klik untuk input hari ini"}
     </div>
 
+    <div class="nav">
+      <button onclick="prev()">⬅️ Sebelumnya</button>
+      <button onclick="next()">Selanjutnya ➡️</button>
+    </div>
+
   </div>`;
 }
 
@@ -107,3 +192,6 @@ function prev(){
 render();
 
 </script>
+
+</body>
+</html>
